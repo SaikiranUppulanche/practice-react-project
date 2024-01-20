@@ -1,24 +1,32 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Card from "../UI/Card";
 import classes from "./UserInputForm.module.css";
 import Button from "../UI/Button";
 import Modal from "../UI/Modal";
+import Wrapper from "../Helper/Wrapper";
 
 const UserInputForm = (props) => {
-  const [userName, setUserName] = useState("");
-  const [userAge, setUserAge] = useState("");
+  // const [userName, setUserName] = useState("");
+  // const [userAge, setUserAge] = useState("");
   const [error, setError] = useState();
+  const inputNameRef = useRef();
+  const inputAgeRef = useRef();
+  const inputCollegeRef = useRef();
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    if (userName.trim().length === 0 || userAge.trim().length === 0) {
+    const enteredName = inputNameRef.current.value;
+    const enteredAge = inputAgeRef.current.value;
+    const enteredCollege = inputCollegeRef.current.value;
+
+    if (enteredName.trim().length === 0 || enteredAge.trim().length === 0) {
       setError({
         title: "Invalid Input",
         message: "Please enter a valid name and age (non-empty value)",
       });
       return;
     }
-    if (+userAge < 1) {
+    if (+enteredAge < 1) {
       setError({
         title: "Invalid Age",
         message: "Please enter a valid age ( > 0)",
@@ -27,12 +35,16 @@ const UserInputForm = (props) => {
     }
     const userObj = {
       id: Math.random().toString(),
-      name: userName,
-      age: userAge,
+      name: enteredName,
+      age: enteredAge,
+      college: enteredCollege,
     };
     props.onAddUser(userObj);
-    setUserName("");
-    setUserAge("");
+    // setUserName("");
+    // setUserAge("");
+    inputNameRef.current.value = "";
+    inputAgeRef.current.value = "";
+    inputCollegeRef.current.value = "";
   };
 
   const errorHandler = () => {
@@ -40,7 +52,7 @@ const UserInputForm = (props) => {
   };
 
   return (
-    <div>
+    <Wrapper>
       {error && (
         <Modal
           title={error.title}
@@ -53,21 +65,31 @@ const UserInputForm = (props) => {
           <label htmlFor="username">Username</label>
           <input
             type="text"
-            id="username"
-            value={userName || ""}
-            onChange={(event) => setUserName(event.target.value)}
+            // id="username"
+            // value={userName || ""}
+            // onChange={(event) => setUserName(event.target.value)}
+            ref={inputNameRef}
           />
           <label htmlFor="age">Age (Years)</label>
           <input
             type="number"
             id="age"
-            value={userAge || ""}
-            onChange={(event) => setUserAge(event.target.value)}
+            // value={userAge || ""}
+            // onChange={(event) => setUserAge(event.target.value)}
+            ref={inputAgeRef}
+          />
+          <label htmlFor="college">College Name</label>
+          <input
+            type="text"
+            id="college"
+            // value={userAge || ""}
+            // onChange={(event) => setUserAge(event.target.value)}
+            ref={inputCollegeRef}
           />
           <Button type="submit">Add User</Button>
         </form>
       </Card>
-    </div>
+    </Wrapper>
   );
 };
 

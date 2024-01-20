@@ -11,10 +11,10 @@ const App = () => {
   };
 
   return (
-    <div>
+    <>
       <UserInputForm onAddUser={handleOnAddUser} />
       <UserList usersList={usersList} />
-    </div>
+    </>
   );
 };
 
