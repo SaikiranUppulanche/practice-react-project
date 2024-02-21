@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import MoviesList from "./components/MoviesList";
 import "./App.css";
@@ -7,16 +7,13 @@ function App() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [retrying, setRetrying] = useState(false);
-  const [fetchTimerId, setFetchTimerId] = useState(null);
 
-  async function fetchMoviesHandler() {
+  const fetchMoviesHandler = useCallback(async () => {
     setLoading(true);
     setError(null);
-    setRetrying(true);
 
     try {
-      const response = await fetch("https://swapi.dev/api/film");
+      const response = await fetch("https://swapi.dev/api/films");
       if (!response.ok) {
         throw new Error("Something went wrong....Retrying");
       }
@@ -34,18 +31,13 @@ function App() {
       setMovies(movieDetails);
     } catch (error) {
       setError(error.message);
-      const timerId = setTimeout(fetchMoviesHandler, 5000);
-      setFetchTimerId(timerId);
     }
     setLoading(false);
-  }
+  }, []);
 
-  function stopFetching() {
-    setRetrying(false);
-    clearTimeout(fetchTimerId);
-    setLoading(false);
-    setError(null);
-  }
+  useEffect(() => {
+    fetchMoviesHandler();
+  }, [fetchMoviesHandler]);
 
   let content = <p>Found no Movies</p>;
 
@@ -65,7 +57,6 @@ function App() {
     <React.Fragment>
       <section>
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>{" "}
-        {retrying && <button onClick={stopFetching}>Stop Fetching</button>}
       </section>
       <section>{content}</section>
     </React.Fragment>
