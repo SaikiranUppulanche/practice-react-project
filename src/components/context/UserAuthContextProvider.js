@@ -8,12 +8,10 @@ const UserAuthContextProvider = (props) => {
 
   const handleAddToken = (token) => {
     setAuthToken(token);
-    console.log(token);
   };
 
   const handleDeleteToken = () => {
     setAuthToken(null);
-    console.log("deleted token");
   };
 
   return (
