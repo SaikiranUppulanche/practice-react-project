@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { userAuthContext } from "./userAuthContext";
 
 const UserAuthContextProvider = (props) => {
@@ -16,6 +16,17 @@ const UserAuthContextProvider = (props) => {
     setAuthToken(null);
     localStorage.removeItem("token");
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleDeleteToken();
+      console.log("token cleared");
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }, 5 * 60 * 1000);
+  }, []);
 
   return (
     <userAuthContext.Provider
